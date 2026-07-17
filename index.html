@@ -1,77 +1,319 @@
 <!DOCTYPE html>
-<html lang="sv">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RolfiRhymes</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>RolfiRhymes</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; max-width: 600px; margin: 0 auto; }
+  input, button { padding: 8px; margin: 5px 0; }
+  button { cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+  button:hover { background: #0056b3; }
+  #results { margin-top: 20px; }
+  .word-item { cursor: pointer; padding: 5px; margin: 2px; background: #f0f0f0; border-radius: 3px; display: inline-block; }
+  .word-item:hover { background: #e0e0e0; }
+  .section { margin: 15px 0; padding: 10px; background: #f9f9f9; border-radius: 5px; }
+</style>
 </head>
 <body>
-  <div id="app">
-    <header>
-      <h1>RolfiRhymes</h1>
-      <p class="subtitle">Eget redigerbart rimlexikon</p>
-    </header>
+  <h1>RolfiRhymes</h1>
 
-    <main>
-      <!-- Sökfält -->
-      <div class="search-box">
-        <input 
-          type="text" 
-          id="searchInput" 
-          placeholder="Sök rimord..."
-          autocomplete="off"
-        >
-        <button id="searchBtn">Sök</button>
-        <button id="clearBtn" class="secondary">Rensa</button>
-      </div>
+  <div class="section">
+    <h2>Sök</h2>
+    <input type="text" id="searchInput" placeholder="Sök rimord...">
+    <button onclick="search()">Sök</button>
+    <button onclick="clearSearch()">Rensa</button>
+    <div id="results"></div>
+  </div>
 
-      <!-- Importera CSV -->
-      <div class="import-section">
-        <h2>Importera CSV</h2>
-        <div class="import-controls">
-          <input type="file" id="csvFile" accept=".csv">
-          <button id="importBtn">Importera</button>
-          <button id="downloadTemplateBtn" class="secondary">Ladda ner mall</button>
-        </div>
-        <p class="hint">Format: ord,rimord1,rimord2,rimord3 (komma-separerat)</p>
-      </div>
+  <div class="section">
+    <h2>Importera CSV</h2>
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="importCSV()">Importera</button>
+    <button onclick="downloadTemplate()">Ladda ner mall</button>
+  </div>
 
-      <!-- Redigera -->
-      <div class="edit-section">
-        <h2>Lägg till/redigera</h2>
-        <div class="edit-form">
-          <input type="text" id="wordInput" placeholder="Ord">
-          <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
-          <button id="addBtn">Lägg till</button>
-          <button id="updateBtn" class="secondary" disabled>Uppdatera</button>
-          <button id="deleteBtn" class="danger">Ta bort</button>
-        </div>
-      </div>
+  <div class="section">
+    <h2>Lägg till/redigera</h2>
+    <input type="text" id="wordInput" placeholder="Ord">
+    <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
+    <button onclick="addWord()">Lägg till</button>
+    <button onclick="updateWord()" id="updateBtn" disabled>Uppdatera</button>
+    <button onclick="confirmDelete()" id="deleteBtn">Ta bort</button>
+    <div id="wordList"></div>
+  </div>
 
-      <!-- Resultat -->
-      <div class="results-section">
-        <h2>Resultat</h2>
-        <div id="results"></div>
-      </div>
-
-      <!-- Lista alla -->
-      <div class="list-section">
-        <h2>Alla ord (<span id="totalCount">0</span>)</h2>
-        <div id="wordList"></div>
-      </div>
-    </main>
-
-    <!-- Modal för bekräftelse -->
-    <div id="modal" class="modal" hidden>
-      <div class="modal-content">
-        <p id="modalMessage"></p>
-        <button id="modalConfirm">OK</button>
-        <button id="modalCancel" class="secondary">Avbryt</button>
-      </div>
+  <div id="modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
+    <div style="background:white; padding:20px; border-radius:5px; max-width:400px;">
+      <p id="modalMessage"></p>
+      <button onclick="modalConfirm()" id="modalConfirm">OK</button>
+      <button onclick="modalCancel()" id="modalCancel" style="margin-left:10px;">Avbryt</button>
     </div>
   </div>
 
-  <script src="app.js"></script>
+  <script>
+    // Data storage
+    let rhymeData = {};
+    let currentEditingWord = null;
+
+    // Initialize
+    function init() {
+      loadData();
+      renderWordList();
+    }
+
+    // Load data from localStorage
+    function loadData() {
+      const saved = localStorage.getItem('rhymeData');
+      if (saved) {
+        try {
+          rhymeData = JSON.parse(saved);
+        } catch (e) {
+          rhymeData = {};
+        }
+      }
+      saveData(); // Ensure data is saved
+    }
+
+    // Save data to localStorage
+    function saveData() {
+      localStorage.setItem('rhymeData', JSON.stringify(rhymeData));
+    }
+
+    // Search for rhymes
+    function search() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      if (!query) {
+        document.getElementById('results').innerHTML = '<p>Skriv ett ord för att hitta rim.</p>';
+        return;
+      }
+
+      const matches = [];
+
+      // Direct match
+      if (rhymeData[query]) {
+        matches.push({ word: query, rhymes: rhymeData[query] });
+      }
+
+      // Check if query rhymes with any word
+      for (const [word, rhymes] of Object.entries(rhymeData)) {
+        if (rhymes.includes(query)) {
+          matches.push({ word: word, rhymes: rhymes });
+        }
+      }
+
+      // Find words that have similar rhymes
+      for (const [word, rhymes] of Object.entries(rhymeData)) {
+        if (word.toLowerCase() !== query &&
+            rhymes.some(r => r.toLowerCase().includes(query)) &&
+            !matches.some(m => m.word === word)) {
+          matches.push({ word: word, rhymes: rhymes });
+        }
+      }
+
+      displayResults(matches);
+    }
+
+    // Display search results
+    function displayResults(matches) {
+      const resultsDiv = document.getElementById('results');
+      if (matches.length === 0) {
+        resultsDiv.innerHTML = '<p>Inga rim hittades.</p>';
+        return;
+      }
+
+      resultsDiv.innerHTML = matches.map(match =>
+        `<div class="rhyme-group" style="margin:10px 0; padding:10px; background:#f0f0f0; border-left:3px solid #007bff;">
+          <div style="font-weight:bold; color:#007bff;">${match.word}</div>
+          <div>${match.rhymes.join(', ')}</div>
+        </div>`
+      ).join('');
+    }
+
+    // Clear search
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('results').innerHTML = '<p>Skriv ett ord för att hitta rim.</p>';
+    }
+
+    // Import CSV file
+    function importCSV() {
+      const file = document.getElementById('csvFile').files[0];
+      if (!file) {
+        showModal('Välj en CSV-fil först.');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const content = e.target.result;
+          const lines = content.split('\n');
+
+          for (const line of lines) {
+            if (!line.trim()) continue;
+            const parts = line.split(',').map(p => p.trim());
+            if (parts.length < 2) continue;
+
+            const word = parts[0].toLowerCase();
+            const rhymes = parts.slice(1).filter(p => p);
+            rhymeData[word] = rhymes;
+          }
+
+          saveData();
+          renderWordList();
+          clearSearch();
+          document.getElementById('csvFile').value = '';
+          showModal(`Importerade ${lines.length - 1} ord!`);
+        } catch (e) {
+          showModal('Fel vid import: ' + e.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // Download CSV template
+    function downloadTemplate() {
+      const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\nkat,hat,mat,rat\nhus,mus,plus,bus\n';
+      downloadCSV(csv, 'rimlexikon_mall.csv');
+    }
+
+    // Add new word
+    function addWord() {
+      const word = document.getElementById('wordInput').value.trim().toLowerCase();
+      const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim()).filter(r => r);
+
+      if (!word) {
+        showModal('Ange ett ord.');
+        return;
+      }
+
+      if (!rhymes.length) {
+        showModal('Ange minst ett rimord.');
+        return;
+      }
+
+      rhymeData[word] = rhymes;
+      saveData();
+      renderWordList();
+
+      // Clear inputs
+      document.getElementById('wordInput').value = '';
+      document.getElementById('rhymeInput').value = '';
+      currentEditingWord = null;
+      document.getElementById('updateBtn').disabled = true;
+      document.getElementById('deleteBtn').disabled = true;
+
+      showModal(`Lade till: ${word}`);
+    }
+
+    // Update existing word
+    function updateWord() {
+      if (!currentEditingWord) return;
+
+      const word = document.getElementById('wordInput').value.trim().toLowerCase();
+      const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim()).filter(r => r);
+
+      if (!word) {
+        showModal('Ange ett ord.');
+        return;
+      }
+
+      if (!rhymes.length) {
+        showModal('Ange minst ett rimord.');
+        return;
+      }
+
+      delete rhymeData[currentEditingWord];
+      rhymeData[word] = rhymes;
+      saveData();
+      renderWordList();
+
+      currentEditingWord = null;
+      document.getElementById('updateBtn').disabled = true;
+      document.getElementById('deleteBtn').disabled = true;
+
+      showModal(`Uppdaterade till: ${word}`);
+    }
+
+    // Confirm delete
+    function confirmDelete() {
+      if (!currentEditingWord) return;
+      document.getElementById('modalMessage').textContent = `Ta bort "${currentEditingWord}"?`;
+      document.getElementById('modalConfirm').textContent = 'Ta bort';
+      document.getElementById('modalConfirm').onclick = function() {
+        deleteWord();
+        document.getElementById('modal').style.display = 'none';
+      };
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    // Delete word
+    function deleteWord() {
+      if (!currentEditingWord) return;
+
+      delete rhymeData[currentEditingWord];
+      saveData();
+      renderWordList();
+
+      document.getElementById('wordInput').value = '';
+      document.getElementById('rhymeInput').value = '';
+      currentEditingWord = null;
+      document.getElementById('updateBtn').disabled = true;
+      document.getElementById('deleteBtn').disabled = true;
+    }
+
+    // Render word list
+    function renderWordList() {
+      const words = Object.keys(rhymeData).sort();
+      const wordListDiv = document.getElementById('wordList');
+      wordListDiv.innerHTML = words.map(word =>
+        `<div class="word-item" data-word="${word}" onclick="editWord('${word}')">${word}</div>`
+      ).join('');
+    }
+
+    // Edit word
+    function editWord(word) {
+      currentEditingWord = word;
+      document.getElementById('wordInput').value = word;
+      document.getElementById('rhymeInput').value = rhymeData[word].join(', ');
+      document.getElementById('updateBtn').disabled = false;
+      document.getElementById('deleteBtn').disabled = false;
+      document.getElementById('wordInput').focus();
+    }
+
+    // Show modal
+    function showModal(message) {
+      document.getElementById('modalMessage').textContent = message;
+      document.getElementById('modalConfirm').textContent = 'OK';
+      document.getElementById('modalConfirm').onclick = function() {
+        document.getElementById('modal').style.display = 'none';
+      };
+      document.getElementById('modal').style.display = 'flex';
+    }
+
+    // Modal cancel
+    function modalCancel() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Modal confirm
+    function modalConfirm() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    // Download CSV
+    function downloadCSV(content, filename) {
+      const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize when page loads
+    window.onload = init;
+  </script>
 </body>
 </html>
