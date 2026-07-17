@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RolfiRhymes</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>RolfiRhymes</h1>
+      <p class="subtitle">Eget redigerbart rimlexikon</p>
+    </header>
+
+    <main>
+      <!-- Sökfält -->
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Sök rimord..."
+          autocomplete="off"
+        >
+        <button id="searchBtn">Sök</button>
+        <button id="clearBtn" class="secondary">Rensa</button>
+      </div>
+
+      <!-- Importera CSV -->
+      <div class="import-section">
+        <h2>Importera CSV</h2>
+        <div class="import-controls">
+          <input type="file" id="csvFile" accept=".csv">
+          <button id="importBtn">Importera</button>
+          <button id="downloadTemplateBtn" class="secondary">Ladda ner mall</button>
+        </div>
+        <p class="hint">Format: ord,rimord1,rimord2,rimord3 (komma-separerat)</p>
+      </div>
+
+      <!-- Redigera -->
+      <div class="edit-section">
+        <h2>Lägg till/redigera</h2>
+        <div class="edit-form">
+          <input type="text" id="wordInput" placeholder="Ord">
+          <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
+          <button id="addBtn">Lägg till</button>
+          <button id="updateBtn" class="secondary" disabled>Uppdatera</button>
+          <button id="deleteBtn" class="danger">Ta bort</button>
+        </div>
+      </div>
+
+      <!-- Resultat -->
+      <div class="results-section">
+        <h2>Resultat</h2>
+        <div id="results"></div>
+      </div>
+
+      <!-- Lista alla -->
+      <div class="list-section">
+        <h2>Alla ord (<span id="totalCount">0</span>)</h2>
+        <div id="wordList"></div>
+      </div>
+    </main>
+
+    <!-- Modal för bekräftelse -->
+    <div id="modal" class="modal" hidden>
+      <div class="modal-content">
+        <p id="modalMessage"></p>
+        <button id="modalConfirm">OK</button>
+        <button id="modalCancel" class="secondary">Avbryt</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

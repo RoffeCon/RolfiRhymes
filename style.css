@@ -1,0 +1,283 @@
+/* RolfiRhymes - Enkelt och modulärt rimlexikon */
+
+:root {
+  --bg: #f8f8f8;
+  --surface: #ffffff;
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --secondary: #64748b;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --text: #1e293b;
+  --text-light: #64748b;
+  --border: #e2e8f0;
+  --radius: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  color: var(--primary);
+  font-size: 2rem;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Sökfält */
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 1rem;
+}
+
+.search-box input:focus {
+  outline: 2px solid var(--primary);
+  border-color: transparent;
+}
+
+/* Knappar */
+button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+button:first-of-type {
+  background: var(--primary);
+  color: white;
+}
+
+button.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.danger {
+  background: var(--danger);
+  color: white;
+}
+
+/* Sektioner */
+h2 {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+}
+
+.import-section,
+.edit-section,
+.results-section,
+.list-section {
+  background: var(--surface);
+  padding: 15px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* Import */
+.import-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.import-controls input[type="file"] {
+  flex: 1;
+}
+
+.hint {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+/* Redigera */
+.edit-form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.edit-form input {
+  flex: 1;
+  min-width: 150px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+}
+
+/* Resultat */
+#results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rhyme-group {
+  background: var(--bg);
+  padding: 12px;
+  border-radius: var(--radius);
+  border-left: 3px solid var(--primary);
+}
+
+.rhyme-group .word {
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 5px;
+}
+
+.rhyme-group .rhymes {
+  color: var(--text);
+}
+
+.rhyme-group .rhymes span {
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 4px;
+}
+
+/* Lista alla */
+#wordList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.word-item {
+  background: var(--bg);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.word-item:hover {
+  background: var(--border);
+}
+
+.word-item.editing {
+  background: #dbeafe;
+  border: 1px solid var(--primary);
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-content {
+  background: var(--surface);
+  padding: 20px;
+  border-radius: var(--radius);
+  max-width: 400px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.modal-content button {
+  align-self: flex-end;
+}
+
+.modal-content button.secondary {
+  margin-right: 10px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  body {
+    padding: 15px;
+  }
+  
+  .search-box {
+    flex-direction: column;
+  }
+  
+  .edit-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .edit-form input {
+    width: 100%;
+  }
+}
