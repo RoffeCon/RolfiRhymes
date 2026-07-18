@@ -2,49 +2,222 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RolfiRhymes</title>
+<title>RolfiRhymes - Fullständig</title>
 <style>
 :root {
   --sv-color: #1e88e5;
   --en-color: #43a047;
   --fr-color: #e91e63;
 }
-body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; margin: 0 auto; background: #f5f5f5; }
-.section { margin: 15px 0; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-input, button, select { padding: 10px; margin: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 14px; }
-button { cursor: pointer; background: #007bff; color: white; border: none; transition: background 0.3s; }
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  background: #f5f5f5;
+}
+.section {
+  margin: 15px 0;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+input, button, select, textarea {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+button {
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  border: none;
+  transition: background 0.3s;
+}
 button:hover { background: #0056b3; }
 button.secondary { background: #6c757d; }
 button.danger { background: #dc3545; }
-.word-item { cursor: pointer; padding: 8px 12px; margin: 4px; background: #f8f9fa; border-radius: 4px; display: inline-block; transition: all 0.2s; }
-.word-item:hover { background: #e9ecef; }
-.rhyme-group { margin: 15px 0; padding: 15px; background: white; border-left: 4px solid #007bff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-.rhyme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-.rhyme-word { font-weight: bold; font-size: 1.1em; color: #2c3e50; }
-.rhyme-meta { display: flex; gap: 10px; }
-.lang-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; color: white; }
+button.success { background: #28a745; }
+.word-item {
+  cursor: pointer;
+  padding: 8px 12px;
+  margin: 4px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  display: inline-block;
+  transition: all 0.2s;
+}
+.word-item:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
+}
+.rhyme-group {
+  margin: 15px 0;
+  padding: 15px;
+  background: white;
+  border-left: 4px solid #007bff;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+.rhyme-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.rhyme-word {
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #2c3e50;
+  cursor: pointer;
+}
+.rhyme-word:hover {
+  text-decoration: underline;
+}
+.rhyme-meta {
+  display: flex;
+  gap: 10px;
+}
+.lang-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: white;
+}
 .lang-sv { background: var(--sv-color); }
 .lang-en { background: var(--en-color); }
 .lang-fr { background: #e91e63; }
-.type-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; color: white; }
+.type-badge {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  font-weight: bold;
+  color: white;
+}
 .type-perfect { background: #2196f3; }
 .type-multi-syllable { background: #9c27b0; }
 .type-assonance { background: #ff9800; color: #212121; }
 .type-alliteration { background: #f44336; }
-.rhyme-list { color: #495057; line-height: 1.6; }
-.rhyme-list span { display: inline-block; margin-right: 8px; margin-bottom: 4px; }
-.language-filters { margin: 10px 0; display: flex; gap: 15px; flex-wrap: wrap; }
-.language-filters label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.rhyme-list {
+  color: #495057;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+.rhyme-list span {
+  display: inline-block;
+  margin-right: 8px;
+  margin-bottom: 4px;
+  position: relative;
+}
+.rhyme-list span:hover::after {
+  content: attr(data-description);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background: #333;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 100;
+  margin-top: 5px;
+}
+.language-filters {
+  margin: 10px 0;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+.language-filters label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
 .language-filters input { margin: 0; }
 #results { margin-top: 20px; }
-#wordList { margin-top: 15px; max-height: 200px; overflow-y: auto; }
-.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-.modal-content { background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%; }
-.modal-content button { margin-top: 15px; margin-right: 10px; }
+#wordList {
+  margin-top: 15px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+.import-export-section {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+}
+.modal-content textarea {
+  width: 100%;
+  min-height: 200px;
+  margin: 10px 0;
+  font-family: monospace;
+}
+.modal-content button {
+  margin-top: 10px;
+  margin-right: 10px;
+}
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -100px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+}
+@media (max-width: 600px) {
+  body { padding: 10px; }
+  .section { padding: 10px; }
+  .rhyme-group { padding: 10px; }
+  .rhyme-list span:hover::after {
+    position: static;
+    margin-top: 5px;
+  }
+}
 </style>
 </head>
 <body>
-<h1>RolfiRhymes</h1>
+<h1>RolfiRhymes - Fullständig</h1>
 
 <div class="section">
   <h2>Sök</h2>
@@ -58,10 +231,23 @@ button.danger { background: #dc3545; }
 </div>
 
 <div class="section">
-  <h2>Importera CSV</h2>
-  <input type="file" id="csvFile" accept=".csv">
-  <button onclick="importCSV()">Importera</button>
-  <button onclick="downloadTemplate()" class="secondary">Ladda ner mall</button>
+  <h2>Importera/Exportera</h2>
+  <div class="import-export-section">
+    <div>
+      <h3>CSV</h3>
+      <input type="file" id="csvFile" accept=".csv">
+      <button onclick="importCSV()">Importera CSV</button>
+      <button onclick="downloadTemplate()" class="secondary">Ladda ner CSV-mall</button>
+      <button onclick="exportCSV()" class="success">Exportera till CSV</button>
+    </div>
+    <div>
+      <h3>JSON</h3>
+      <input type="file" id="jsonFile" accept=".json">
+      <button onclick="importJSON()">Importera JSON</button>
+      <button onclick="exportJSON()" class="success">Exportera till JSON</button>
+      <button onclick="convertCSVtoJSON()" class="secondary">CSV → JSON</button>
+    </div>
+  </div>
 </div>
 
 <div class="section">
@@ -84,7 +270,7 @@ button.danger { background: #dc3545; }
     </select>
   </div>
   <div>
-    <input type="text" id="description" placeholder="Beskrivning (valfritt)">
+    <textarea id="description" placeholder="Beskrivning (valfritt, t.ex. 'dåtid för to shit')"></textarea>
   </div>
   <div>
     <button onclick="addWord()">Lägg till</button>
@@ -97,6 +283,7 @@ button.danger { background: #dc3545; }
 <div id="modal">
   <div class="modal-content">
     <p id="modalMessage"></p>
+    <textarea id="modalText" style="display:none;"></textarea>
     <button onclick="modalConfirm()" id="modalConfirm">OK</button>
     <button onclick="modalCancel()" id="modalCancel">Avbryt</button>
   </div>
@@ -197,7 +384,10 @@ function displayResults(matches, query) {
     return `
     <div class="rhyme-group">
       <div class="rhyme-header">
-        <div class="rhyme-word">${mainWord}</div>
+        <div class="rhyme-word tooltip" onclick="showDescription('${mainWord}')">
+          ${mainWord}
+          ${mainWordData.description ? '<span class="tooltiptext">' + mainWordData.description + '</span>' : ''}
+        </div>
         <div class="rhyme-meta">
           <span class="lang-badge lang-${mainWordData.language}">${mainWordData.language.toUpperCase()}</span>
           <span class="type-badge type-${mainWordData.type}">${getTypeIcon(mainWordData.type)} ${formatType(mainWordData.type)}</span>
@@ -205,19 +395,26 @@ function displayResults(matches, query) {
       </div>
       <div class="rhyme-list">
         ${allWords.map(w => `
-          <span>
+          <span class="tooltip" data-description="${rhymeData[w]?.description || ''}">
             ${w}
-            ${w !== mainWord ? `<button onclick=\"editWord('${w}')\" class=\"secondary\" style=\"padding:2px 6px;font-size:12px;margin-left:5px;\">✏️</button>` : ''}
+            ${w !== mainWord ? `<button onclick="editWord('${w}')" class="secondary" style="padding:2px 6px;font-size:12px;margin-left:5px;">✏️</button>` : ''}
           </span>
         `).join('')}
       </div>
       <div style="margin-top:8px;font-size:0.9em;color:#666;">
         Rim-nyckel: ${mainWordData.rhymeKey}
-        ${mainWordData.description ? ` | ${mainWordData.description}` : ''}
       </div>
     </div>
     `;
   }).join('');
+}
+
+// Visa beskrivning
+function showDescription(word) {
+  const data = rhymeData[word];
+  if (data && data.description) {
+    showModal(data.description);
+  }
 }
 
 // Formatera rim-typ
@@ -285,10 +482,95 @@ function importCSV() {
   reader.readAsText(file);
 }
 
+// Exportera till CSV
+function exportCSV() {
+  let csv = 'ord,rimord,typ,språk,beskrivning\n';
+  for (const [word, data] of Object.entries(rhymeData)) {
+    csv += `"${word}","${data.rhymes.join(';')}",${data.type},${data.language},"${data.description || ''}"\n`;
+  }
+  downloadFile(csv, 'rimlexikon.csv', 'text/csv');
+}
+
 // Ladda ner mall
 function downloadTemplate() {
-  const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\n';
-  downloadCSV(csv, 'rimlexikon_mall.csv');
+  const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\nshit,shat,shit\n';
+  downloadFile(csv, 'rimlexikon_mall.csv', 'text/csv');
+}
+
+// Importera JSON
+function importJSON() {
+  const file = document.getElementById('jsonFile').files[0];
+  if (!file) {
+    showModal('Välj en JSON-fil först.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      const newData = JSON.parse(content);
+      // Merge data
+      for (const [word, data] of Object.entries(newData)) {
+        rhymeData[word] = data;
+      }
+      saveData();
+      renderWordList();
+      document.getElementById('jsonFile').value = '';
+      showModal(`Importerade ${Object.keys(newData).length} ord!`);
+    } catch (e) {
+      showModal('Fel vid import: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+// Exportera till JSON
+function exportJSON() {
+  const json = JSON.stringify(rhymeData, null, 2);
+  downloadFile(json, 'rimlexikon.json', 'application/json');
+}
+
+// Konvertera CSV till JSON
+function convertCSVtoJSON() {
+  const file = document.getElementById('csvFile').files[0];
+  if (!file) {
+    showModal('Välj en CSV-fil först.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      const lines = content.split('\n');
+      const jsonData = {};
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const parts = line.split(',').map(p => p.trim());
+        if (parts.length < 2) continue;
+
+        const word = parts[0].toLowerCase();
+        const rhymes = parts.slice(1).filter(p => p).map(r => r.toLowerCase());
+        const rhymeKey = getRhymeKey(word);
+
+        jsonData[word] = {
+          rhymes,
+          rhymeKey,
+          type: "perfect",
+          language: "sv",
+          description: ""
+        };
+      }
+
+      const json = JSON.stringify(jsonData, null, 2);
+      showModalWithText('Konverterad CSV till JSON:', json);
+    } catch (e) {
+      showModal('Fel vid konvertering: ' + e.message);
+    }
+  };
+  reader.readAsText(file);
 }
 
 // Lägg till ord
@@ -441,6 +723,7 @@ function editWord(word) {
 // Visa modal
 function showModal(message) {
   document.getElementById('modalMessage').textContent = message;
+  document.getElementById('modalText').style.display = 'none';
   document.getElementById('modalConfirm').textContent = 'OK';
   document.getElementById('modalConfirm').onclick = function() {
     document.getElementById('modal').style.display = 'none';
@@ -448,20 +731,49 @@ function showModal(message) {
   document.getElementById('modal').style.display = 'flex';
 }
 
-// Modal cancel
-function modalCancel() {
-  document.getElementById('modal').style.display = 'none';
+// Visa modal med text (för JSON)
+function showModalWithText(message, text) {
+  document.getElementById('modalMessage').textContent = message;
+  document.getElementById('modalText').value = text;
+  document.getElementById('modalText').style.display = 'block';
+  document.getElementById('modalConfirm').textContent = 'Kopiera';
+  document.getElementById('modalConfirm').onclick = function() {
+    copyToClipboard(text);
+    document.getElementById('modal').style.display = 'none';
+  };
+  document.getElementById('modal').style.display = 'flex';
 }
 
-// Ladda ner CSV
-function downloadCSV(content, filename) {
-  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+// Kopiera till urklipp
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    showModal('Kopierat till urklipp!');
+  }).catch(() => {
+    // Fallback för äldre webbläsare
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    showModal('Kopierat till urklipp!');
+  });
+}
+
+// Ladda ner fil
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type: type });
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
   link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+// Modal cancel
+function modalCancel() {
+  document.getElementById('modal').style.display = 'none';
 }
 
 // Initiera
