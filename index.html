@@ -2,156 +2,347 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RolfiRhymes - Fullständig</title>
+<title>RolfiRhymes - Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 :root {
-  --sv-color: #1e88e5;
-  --en-color: #43a047;
-  --fr-color: #e91e63;
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --accent-color: #e74c3c;
+  --text-color: #2c3e50;
+  --bg-color: #ecf0f1;
+  --surface-color: #ffffff;
+  --border-color: #bdc3c7;
+  --shadow-color: rgba(0,0,0,0.1);
+
+  --sv-color: #3498db;
+  --en-color: #2ecc71;
+  --fr-color: #e74c3c;
+
+  --perfect-color: #3498db;
+  --multi-color: #9b59b6;
+  --assonance-color: #f39c12;
+  --alliteration-color: #e74c3c;
 }
+
+[data-theme="dark"] {
+  --primary-color: #3a86ff;
+  --secondary-color: #8338ec;
+  --accent-color: #ff006e;
+  --text-color: #ecf0f1;
+  --bg-color: #1a1a2e;
+  --surface-color: #16213e;
+  --border-color: #0f3460;
+  --shadow-color: rgba(0,0,0,0.3);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: background-color 0.3s, color 0.3s;
+}
+
 body {
-  font-family: Arial, sans-serif;
-  margin: 20px;
-  max-width: 800px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 20px;
+  max-width: 900px;
   margin: 0 auto;
-  background: #f5f5f5;
+  background: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  min-height: 100vh;
 }
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+  font-size: 1.8em;
+  color: var(--primary-color);
+}
+
+.theme-toggle {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  background: var(--surface-color);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px var(--shadow-color);
+  text-align: center;
+  min-width: 120px;
+}
+
+.stat-value {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.stat-label {
+  font-size: 0.8em;
+  color: var(--text-color);
+  opacity: 0.8;
+}
+
 .section {
   margin: 15px 0;
-  padding: 15px;
-  background: white;
+  padding: 20px;
+  background: var(--surface-color);
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
+
+.section h2 {
+  color: var(--primary-color);
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-color);
+}
+
 input, button, select, textarea {
-  padding: 10px;
+  padding: 10px 12px;
   margin: 5px;
-  border-radius: 4px;
-  border: 1px solid #ddd;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
   font-size: 14px;
+  background: var(--surface-color);
+  color: var(--text-color);
 }
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
 button {
   cursor: pointer;
-  background: #007bff;
+  background: var(--primary-color);
   color: white;
   border: none;
-  transition: background 0.3s;
+  transition: all 0.2s;
+  font-weight: 500;
 }
-button:hover { background: #0056b3; }
-button.secondary { background: #6c757d; }
-button.danger { background: #dc3545; }
-button.success { background: #28a745; }
+
+button:hover {
+  background: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button.secondary {
+  background: var(--border-color);
+  color: var(--text-color);
+}
+
+button.danger {
+  background: var(--accent-color);
+}
+
+button.success {
+  background: var(--secondary-color);
+}
+
+button.small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
 .word-item {
   cursor: pointer;
   padding: 8px 12px;
   margin: 4px;
-  background: #f8f9fa;
-  border-radius: 4px;
+  background: var(--bg-color);
+  border-radius: 6px;
   display: inline-block;
   transition: all 0.2s;
+  border: 1px solid var(--border-color);
 }
+
 .word-item:hover {
-  background: #e9ecef;
-  transform: translateY(-1px);
+  background: var(--primary-color);
+  color: white;
+  transform: translateY(-2px);
 }
+
 .rhyme-group {
   margin: 15px 0;
   padding: 15px;
-  background: white;
-  border-left: 4px solid #007bff;
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  background: var(--bg-color);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px var(--shadow-color);
 }
+
 .rhyme-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
+
 .rhyme-word {
   font-weight: bold;
   font-size: 1.1em;
-  color: #2c3e50;
+  color: var(--primary-color);
   cursor: pointer;
+  position: relative;
 }
+
 .rhyme-word:hover {
   text-decoration: underline;
 }
+
 .rhyme-meta {
   display: flex;
   gap: 10px;
 }
+
 .lang-badge {
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 12px;
-  font-size: 0.8em;
+  font-size: 0.75em;
   font-weight: bold;
   color: white;
 }
+
 .lang-sv { background: var(--sv-color); }
 .lang-en { background: var(--en-color); }
-.lang-fr { background: #e91e63; }
+.lang-fr { background: var(--fr-color); }
+
 .type-badge {
-  padding: 3px 8px;
+  padding: 4px 8px;
   border-radius: 12px;
-  font-size: 0.8em;
+  font-size: 0.75em;
   font-weight: bold;
   color: white;
 }
-.type-perfect { background: #2196f3; }
-.type-multi-syllable { background: #9c27b0; }
-.type-assonance { background: #ff9800; color: #212121; }
-.type-alliteration { background: #f44336; }
+
+.type-perfect { background: var(--perfect-color); }
+.type-multi-syllable { background: var(--multi-color); }
+.type-assonance { background: var(--assonance-color); color: #212121; }
+.type-alliteration { background: var(--alliteration-color); }
+
 .rhyme-list {
-  color: #495057;
+  color: var(--text-color);
   line-height: 1.6;
-  margin: 8px 0;
+  margin: 10px 0;
 }
+
 .rhyme-list span {
   display: inline-block;
   margin-right: 8px;
   margin-bottom: 4px;
   position: relative;
+  cursor: default;
 }
-.rhyme-list span:hover::after {
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip::after {
   content: attr(data-description);
   position: absolute;
-  left: 0;
-  top: 100%;
-  background: #333;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 12px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface-color);
+  color: var(--text-color);
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   white-space: nowrap;
-  z-index: 100;
-  margin-top: 5px;
+  z-index: 1000;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+  margin-bottom: 10px;
+  max-width: 300px;
+  text-align: center;
 }
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
 .language-filters {
   margin: 10px 0;
   display: flex;
   gap: 15px;
   flex-wrap: wrap;
 }
+
 .language-filters label {
   display: flex;
   align-items: center;
   gap: 5px;
   cursor: pointer;
 }
+
 .language-filters input { margin: 0; }
-#results { margin-top: 20px; }
+
+.import-export-section {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.import-export-section > div {
+  margin-bottom: 10px;
+}
+
+.import-export-section h3 {
+  margin-bottom: 5px;
+  color: var(--primary-color);
+  font-size: 1em;
+}
+
+#results {
+  margin-top: 20px;
+}
+
 #wordList {
   margin-top: 15px;
   max-height: 200px;
   overflow-y: auto;
+  padding: 5px;
+  background: var(--bg-color);
+  border-radius: 6px;
 }
-.import-export-section {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
+
 .modal {
   display: none;
   position: fixed;
@@ -159,68 +350,81 @@ button.success { background: #28a745; }
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.7);
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
+
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+  background: var(--surface-color);
+  padding: 25px;
+  border-radius: 10px;
   max-width: 500px;
   width: 90%;
+  box-shadow: 0 8px 25px var(--shadow-color);
 }
+
 .modal-content textarea {
   width: 100%;
   min-height: 200px;
-  margin: 10px 0;
+  margin: 15px 0;
   font-family: monospace;
+  background: var(--bg-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 10px;
 }
+
 .modal-content button {
   margin-top: 10px;
   margin-right: 10px;
 }
-.tooltip {
-  position: relative;
-  display: inline-block;
-}
-.tooltip .tooltiptext {
-  visibility: hidden;
-  width: 200px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  margin-left: -100px;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-@media (max-width: 600px) {
+
+@media (max-width: 768px) {
   body { padding: 10px; }
-  .section { padding: 10px; }
-  .rhyme-group { padding: 10px; }
-  .rhyme-list span:hover::after {
+  .section { padding: 15px; }
+  .rhyme-group { padding: 12px; }
+  .stats { flex-direction: column; gap: 10px; }
+  .stat-item { min-width: auto; }
+  .language-filters { flex-direction: column; gap: 8px; }
+  .import-export-section { flex-direction: column; }
+  .tooltip::after {
     position: static;
     margin-top: 5px;
+    transform: none;
   }
 }
 </style>
 </head>
 <body>
-<h1>RolfiRhymes - Fullständig</h1>
+<header>
+  <h1>RolfiRhymes Pro</h1>
+  <button class="theme-toggle" onclick="toggleTheme()">🌓 Tema</button>
+</header>
+
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-value" id="totalWords">0</div>
+    <div class="stat-label">Totalt ord</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" id="svWords">0</div>
+    <div class="stat-label">Svenska</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" id="enWords">0</div>
+    <div class="stat-label">Engelska</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value" id="frWords">0</div>
+    <div class="stat-label">Franska</div>
+  </div>
+</div>
 
 <div class="section">
-  <h2>Sök</h2>
+  <h2>🔍 Sök</h2>
   <input type="text" id="searchInput" placeholder="Sök rimord i realtid..." oninput="search()">
   <div class="language-filters">
     <label><input type="checkbox" id="langSv" checked onclick="search()"> 🇸🇪 Svenska</label>
@@ -231,13 +435,13 @@ button.success { background: #28a745; }
 </div>
 
 <div class="section">
-  <h2>Importera/Exportera</h2>
+  <h2>📥 Importera/Exportera</h2>
   <div class="import-export-section">
     <div>
       <h3>CSV</h3>
       <input type="file" id="csvFile" accept=".csv">
       <button onclick="importCSV()">Importera CSV</button>
-      <button onclick="downloadTemplate()" class="secondary">Ladda ner CSV-mall</button>
+      <button onclick="downloadTemplate()" class="secondary">Ladda ner mall</button>
       <button onclick="exportCSV()" class="success">Exportera till CSV</button>
     </div>
     <div>
@@ -251,7 +455,7 @@ button.success { background: #28a745; }
 </div>
 
 <div class="section">
-  <h2>Lägg till/redigera</h2>
+  <h2>➕ Lägg till/redigera</h2>
   <div>
     <input type="text" id="wordInput" placeholder="Ord">
     <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
@@ -290,19 +494,134 @@ button.success { background: #28a745; }
 </div>
 
 <script>
-// Data storage
+// Database configuration
+const DB_NAME = 'RolfiRhymesDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'rhymeData';
+let db;
 let rhymeData = {};
 let currentEditingWord = null;
 
-// Initialize
-function init() {
-  loadData();
-  renderWordList();
-  document.getElementById('searchInput').addEventListener('input', search);
+// Initialize IndexedDB
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+    request.onerror = (event) => {
+      console.error('IndexedDB error:', event.target.error);
+      reject(event.target.error);
+    };
+
+    request.onsuccess = (event) => {
+      db = event.target.result;
+      loadData().then(resolve);
+    };
+
+    request.onupgradeneeded = (event) => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME, { keyPath: 'word' });
+      }
+    };
+  });
 }
 
-// Load data from localStorage
-function loadData() {
+// Load data from IndexedDB
+async function loadData() {
+  if (!db) await initDB();
+
+  return new Promise((resolve) => {
+    const transaction = db.transaction(STORE_NAME, 'readonly');
+    const store = transaction.objectStore(STORE_NAME);
+    const request = store.getAll();
+
+    request.onsuccess = () => {
+      rhymeData = {};
+      request.result.forEach(item => {
+        rhymeData[item.word] = item;
+      });
+      updateStats();
+      resolve();
+    };
+
+    request.onerror = () => {
+      rhymeData = {};
+      resolve();
+    };
+  });
+}
+
+// Save data to IndexedDB
+async function saveData() {
+  if (!db) await initDB();
+
+  return new Promise((resolve) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite');
+    const store = transaction.objectStore(STORE_NAME);
+
+    // Clear existing data
+    const clearRequest = store.clear();
+
+    clearRequest.onsuccess = () => {
+      // Add all data
+      const addPromises = Object.entries(rhymeData).map(([word, data]) => {
+        return new Promise((innerResolve) => {
+          const addRequest = store.add({ ...data, word });
+          addRequest.onsuccess = innerResolve;
+          addRequest.onerror = innerResolve;
+        });
+      });
+
+      Promise.all(addPromises).then(() => {
+        updateStats();
+        resolve();
+      });
+    };
+  });
+}
+
+// Update statistics
+function updateStats() {
+  const total = Object.keys(rhymeData).length;
+  const sv = Object.values(rhymeData).filter(d => d.language === 'sv').length;
+  const en = Object.values(rhymeData).filter(d => d.language === 'en').length;
+  const fr = Object.values(rhymeData).filter(d => d.language === 'fr').length;
+
+  document.getElementById('totalWords').textContent = total;
+  document.getElementById('svWords').textContent = sv;
+  document.getElementById('enWords').textContent = en;
+  document.getElementById('frWords').textContent = fr;
+}
+
+// Toggle theme
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+}
+
+// Initialize
+async function init() {
+  // Set theme from localStorage
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+
+  // Initialize IndexedDB
+  try {
+    await initDB();
+    renderWordList();
+    document.getElementById('searchInput').addEventListener('input', search);
+  } catch (error) {
+    console.error('Failed to initialize IndexedDB:', error);
+    showModal('Kunde inte initiera databas. Använder localStorage som fallback.');
+    // Fallback to localStorage
+    fallbackToLocalStorage();
+  }
+}
+
+// Fallback to localStorage if IndexedDB fails
+function fallbackToLocalStorage() {
   const saved = localStorage.getItem('rhymeData');
   if (saved) {
     try {
@@ -311,11 +630,15 @@ function loadData() {
       rhymeData = {};
     }
   }
-}
 
-// Save data to localStorage
-function saveData() {
-  localStorage.setItem('rhymeData', JSON.stringify(rhymeData));
+  // Override save function
+  window.saveData = function() {
+    localStorage.setItem('rhymeData', JSON.stringify(rhymeData));
+    updateStats();
+  };
+
+  renderWordList();
+  document.getElementById('searchInput').addEventListener('input', search);
 }
 
 // Generera rim-nyckel
@@ -384,9 +707,9 @@ function displayResults(matches, query) {
     return `
     <div class="rhyme-group">
       <div class="rhyme-header">
-        <div class="rhyme-word tooltip" onclick="showDescription('${mainWord}')">
+        <div class="rhyme-word tooltip" onclick="showDescription('${mainWord}')"
+             data-description="${mainWordData.description ? mainWordData.description.replace(/"/g, '&quot;') : ''}">
           ${mainWord}
-          ${mainWordData.description ? '<span class="tooltiptext">' + mainWordData.description + '</span>' : ''}
         </div>
         <div class="rhyme-meta">
           <span class="lang-badge lang-${mainWordData.language}">${mainWordData.language.toUpperCase()}</span>
@@ -395,13 +718,13 @@ function displayResults(matches, query) {
       </div>
       <div class="rhyme-list">
         ${allWords.map(w => `
-          <span class="tooltip" data-description="${rhymeData[w]?.description || ''}">
+          <span class="tooltip" data-description="${rhymeData[w]?.description ? rhymeData[w].description.replace(/"/g, '&quot;') : ''}">
             ${w}
-            ${w !== mainWord ? `<button onclick="editWord('${w}')" class="secondary" style="padding:2px 6px;font-size:12px;margin-left:5px;">✏️</button>` : ''}
+            ${w !== mainWord ? `<button onclick="editWord('${w}')" class="small secondary">✏️</button>` : ''}
           </span>
         `).join('')}
       </div>
-      <div style="margin-top:8px;font-size:0.9em;color:#666;">
+      <div style="margin-top:8px;font-size:0.9em;color:var(--text-color);opacity:0.8;">
         Rim-nyckel: ${mainWordData.rhymeKey}
       </div>
     </div>
@@ -486,14 +809,15 @@ function importCSV() {
 function exportCSV() {
   let csv = 'ord,rimord,typ,språk,beskrivning\n';
   for (const [word, data] of Object.entries(rhymeData)) {
-    csv += `"${word}","${data.rhymes.join(';')}",${data.type},${data.language},"${data.description || ''}"\n`;
+    const description = data.description ? `"${data.description.replace(/"/g, '""')}"` : '';
+    csv += `"${word}","${data.rhymes.join(';')}",${data.type},${data.language},${description}\n`;
   }
   downloadFile(csv, 'rimlexikon.csv', 'text/csv');
 }
 
 // Ladda ner mall
 function downloadTemplate() {
-  const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\nshit,shat,shit\n';
+  const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\nshit,shat,"past tense of: to shit"\n';
   downloadFile(csv, 'rimlexikon_mall.csv', 'text/csv');
 }
 
@@ -555,12 +879,23 @@ function convertCSVtoJSON() {
         const rhymes = parts.slice(1).filter(p => p).map(r => r.toLowerCase());
         const rhymeKey = getRhymeKey(word);
 
+        // Check if description is in the last part
+        let description = '';
+        if (parts.length > 2 && parts[parts.length-1].includes(':')) {
+          description = parts.slice(2).join(',');
+          // Try to extract rhymes only from the first part after word
+          const rhymeParts = parts.slice(1, -1);
+          if (rhymeParts.length > 0) {
+            rhymes = rhymeParts.filter(p => p).map(r => r.toLowerCase());
+          }
+        }
+
         jsonData[word] = {
           rhymes,
           rhymeKey,
           type: "perfect",
           language: "sv",
-          description: ""
+          description: description
         };
       }
 
@@ -776,7 +1111,7 @@ function modalCancel() {
   document.getElementById('modal').style.display = 'none';
 }
 
-// Initiera
+// Initiera när sidan laddas
 window.onload = init;
 </script>
 </body>
