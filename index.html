@@ -2,412 +2,470 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>RolfiRhymes - Avancerat</title>
+<title>RolfiRhymes</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; margin: 0 auto; }
-  .section { margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 5px; }
-  input, button, select { padding: 8px; margin: 5px; border-radius: 4px; border: 1px solid #ddd; }
-  button { cursor: pointer; background: #007bff; color: white; border: none; }
-  button:hover { background: #0056b3; }
-  .word-item { cursor: pointer; padding: 8px; margin: 4px; background: #f0f0f0; border-radius: 3px; display: inline-block; }
-  .word-item:hover { background: #e0e0e0; }
-  .rhyme-group { margin: 10px 0; padding: 10px; background: #fff; border-left: 3px solid #007bff; border-radius: 3px; }
-  .rhyme-group .word { font-weight: bold; color: #007bff; }
-  .rhyme-group .rhymes { color: #333; }
-  .rhyme-group .meta { font-size: 0.8em; color: #666; margin-top: 5px; }
-  .language-filters { margin: 10px 0; }
-  .language-filters label { margin-right: 15px; }
-  #results { margin-top: 20px; }
+:root {
+  --sv-color: #1e88e5;
+  --en-color: #43a047;
+  --fr-color: #e91e63;
+}
+body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; margin: 0 auto; background: #f5f5f5; }
+.section { margin: 15px 0; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+input, button, select { padding: 10px; margin: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 14px; }
+button { cursor: pointer; background: #007bff; color: white; border: none; transition: background 0.3s; }
+button:hover { background: #0056b3; }
+button.secondary { background: #6c757d; }
+button.danger { background: #dc3545; }
+.word-item { cursor: pointer; padding: 8px 12px; margin: 4px; background: #f8f9fa; border-radius: 4px; display: inline-block; transition: all 0.2s; }
+.word-item:hover { background: #e9ecef; }
+.rhyme-group { margin: 15px 0; padding: 15px; background: white; border-left: 4px solid #007bff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.rhyme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.rhyme-word { font-weight: bold; font-size: 1.1em; color: #2c3e50; }
+.rhyme-meta { display: flex; gap: 10px; }
+.lang-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; color: white; }
+.lang-sv { background: var(--sv-color); }
+.lang-en { background: var(--en-color); }
+.lang-fr { background: #e91e63; }
+.type-badge { padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; color: white; }
+.type-perfect { background: #2196f3; }
+.type-multi-syllable { background: #9c27b0; }
+.type-assonance { background: #ff9800; color: #212121; }
+.type-alliteration { background: #f44336; }
+.rhyme-list { color: #495057; line-height: 1.6; }
+.rhyme-list span { display: inline-block; margin-right: 8px; margin-bottom: 4px; }
+.language-filters { margin: 10px 0; display: flex; gap: 15px; flex-wrap: wrap; }
+.language-filters label { display: flex; align-items: center; gap: 5px; cursor: pointer; }
+.language-filters input { margin: 0; }
+#results { margin-top: 20px; }
+#wordList { margin-top: 15px; max-height: 200px; overflow-y: auto; }
+.modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+.modal-content { background: white; padding: 20px; border-radius: 8px; max-width: 400px; width: 90%; }
+.modal-content button { margin-top: 15px; margin-right: 10px; }
 </style>
 </head>
 <body>
-  <h1>RolfiRhymes - Avancerat</h1>
+<h1>RolfiRhymes</h1>
 
-  <div class="section">
-    <h2>Sök</h2>
-    <input type="text" id="searchInput" placeholder="Sök rimord i realtid..." oninput="search()">
-    <div class="language-filters">
-      <label><input type="checkbox" id="langSv" checked onclick="search()"> Svenska</label>
-      <label><input type="checkbox" id="langEn" checked onclick="search()"> Engelska</label>
-      <label><input type="checkbox" id="langFr" onclick="search()"> Franska</label>
-    </div>
-    <div id="results"></div>
+<div class="section">
+  <h2>Sök</h2>
+  <input type="text" id="searchInput" placeholder="Sök rimord i realtid..." oninput="search()">
+  <div class="language-filters">
+    <label><input type="checkbox" id="langSv" checked onclick="search()"> 🇸🇪 Svenska</label>
+    <label><input type="checkbox" id="langEn" checked onclick="search()"> 🇬🇧 Engelska</label>
+    <label><input type="checkbox" id="langFr" onclick="search()"> 🇫🇷 Franska</label>
   </div>
+  <div id="results"></div>
+</div>
 
-  <div class="section">
-    <h2>Importera CSV</h2>
-    <input type="file" id="csvFile" accept=".csv">
-    <button onclick="importCSV()">Importera</button>
-    <button onclick="downloadTemplate()">Ladda ner mall</button>
+<div class="section">
+  <h2>Importera CSV</h2>
+  <input type="file" id="csvFile" accept=".csv">
+  <button onclick="importCSV()">Importera</button>
+  <button onclick="downloadTemplate()" class="secondary">Ladda ner mall</button>
+</div>
+
+<div class="section">
+  <h2>Lägg till/redigera</h2>
+  <div>
+    <input type="text" id="wordInput" placeholder="Ord">
+    <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
   </div>
-
-  <div class="section">
-    <h2>Lägg till/redigera</h2>
-    <div>
-      <input type="text" id="wordInput" placeholder="Ord">
-      <input type="text" id="rhymeInput" placeholder="Rimord (komma-separerat)">
-    </div>
-    <div>
-      <select id="rhymeType">
-        <option value="perfect">Perfekt rim</option>
-        <option value="multi-syllable">Flerstavigt rim</option>
-        <option value="assonance">Assonantisk rim</option>
-        <option value="alliteration">Alliteration</option>
-      </select>
-      <select id="language">
-        <option value="sv">Svenska</option>
-        <option value="en">Engelska</option>
-        <option value="fr">Franska</option>
-      </select>
-    </div>
-    <div>
-      <input type="text" id="description" placeholder="Beskrivning (valfritt)">
-    </div>
-    <div>
-      <button onclick="addWord()">Lägg till</button>
-      <button onclick="updateWord()" id="updateBtn" disabled>Uppdatera</button>
-      <button onclick="confirmDelete()" id="deleteBtn">Ta bort</button>
-    </div>
-    <div id="wordList"></div>
+  <div>
+    <select id="rhymeType">
+      <option value="perfect">✓ Perfekt</option>
+      <option value="multi-syllable">🔤 Flerstavigt</option>
+      <option value="assonance">🎵 Assonantisk</option>
+      <option value="alliteration">🅰️ Alliteration</option>
+    </select>
+    <select id="language">
+      <option value="sv">🇸🇪 Svenska</option>
+      <option value="en">🇬🇧 Engelska</option>
+      <option value="fr">🇫🇷 Franska</option>
+    </select>
   </div>
-
-  <div id="modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-    <div style="background:white; padding:20px; border-radius:5px; max-width:400px;">
-      <p id="modalMessage"></p>
-      <button onclick="modalConfirm()" id="modalConfirm">OK</button>
-      <button onclick="modalCancel()" id="modalCancel" style="margin-left:10px;">Avbryt</button>
-    </div>
+  <div>
+    <input type="text" id="description" placeholder="Beskrivning (valfritt)">
   </div>
+  <div>
+    <button onclick="addWord()">Lägg till</button>
+    <button onclick="updateWord()" id="updateBtn" disabled>Uppdatera</button>
+    <button onclick="confirmDelete()" id="deleteBtn" class="danger">Ta bort</button>
+  </div>
+  <div id="wordList"></div>
+</div>
 
-  <script>
-    // Data storage
-    let rhymeData = {};
-    let currentEditingWord = null;
+<div id="modal">
+  <div class="modal-content">
+    <p id="modalMessage"></p>
+    <button onclick="modalConfirm()" id="modalConfirm">OK</button>
+    <button onclick="modalCancel()" id="modalCancel">Avbryt</button>
+  </div>
+</div>
 
-    // Initialize
-    function init() {
-      loadData();
+<script>
+// Data storage
+let rhymeData = {};
+let currentEditingWord = null;
+
+// Initialize
+function init() {
+  loadData();
+  renderWordList();
+  document.getElementById('searchInput').addEventListener('input', search);
+}
+
+// Load data from localStorage
+function loadData() {
+  const saved = localStorage.getItem('rhymeData');
+  if (saved) {
+    try {
+      rhymeData = JSON.parse(saved);
+    } catch (e) {
+      rhymeData = {};
+    }
+  }
+}
+
+// Save data to localStorage
+function saveData() {
+  localStorage.setItem('rhymeData', JSON.stringify(rhymeData));
+}
+
+// Generera rim-nyckel
+function getRhymeKey(word) {
+  return word.slice(-3).toLowerCase();
+}
+
+// Sök med realtid och språkfilter
+function search() {
+  const query = document.getElementById('searchInput').value.trim().toLowerCase();
+  const langSv = document.getElementById('langSv').checked;
+  const langEn = document.getElementById('langEn').checked;
+  const langFr = document.getElementById('langFr').checked;
+
+  if (!query) {
+    document.getElementById('results').innerHTML = '<p>Skriv ett ord för att hitta rim.</p>';
+    return;
+  }
+
+  const matches = [];
+  const queryRhymeKey = getRhymeKey(query);
+
+  for (const [word, data] of Object.entries(rhymeData)) {
+    const langMatch = (langSv && data.language === "sv") ||
+                      (langEn && data.language === "en") ||
+                      (langFr && data.language === "fr");
+
+    if (!langMatch) continue;
+
+    if (word.includes(query) ||
+        data.rhymes.includes(query) ||
+        data.rhymeKey === queryRhymeKey ||
+        word === query) {
+      matches.push({ word, ...data });
+    }
+  }
+
+  displayResults(matches, query);
+}
+
+// Visa resultat
+function displayResults(matches, query) {
+  const resultsDiv = document.getElementById('results');
+  if (matches.length === 0) {
+    resultsDiv.innerHTML = '<p>Inga rim hittades.</p>';
+    return;
+  }
+
+  // Gruppera efter rim-nyckel
+  const grouped = {};
+  matches.forEach(match => {
+    if (!grouped[match.rhymeKey]) {
+      grouped[match.rhymeKey] = [];
+    }
+    grouped[match.rhymeKey].push(match);
+  });
+
+  // Visa sökordet som huvudord om det finns
+  const queryMatch = matches.find(m => m.word === query);
+
+  resultsDiv.innerHTML = Object.values(grouped).map(group => {
+    const mainWord = queryMatch && group.some(g => g.word === query) ? query : group[0].word;
+    const mainWordData = rhymeData[mainWord] || group[0];
+    const allWords = [...new Set(group.flatMap(g => [g.word, ...g.rhymes]))].sort();
+
+    return `
+    <div class="rhyme-group">
+      <div class="rhyme-header">
+        <div class="rhyme-word">${mainWord}</div>
+        <div class="rhyme-meta">
+          <span class="lang-badge lang-${mainWordData.language}">${mainWordData.language.toUpperCase()}</span>
+          <span class="type-badge type-${mainWordData.type}">${getTypeIcon(mainWordData.type)} ${formatType(mainWordData.type)}</span>
+        </div>
+      </div>
+      <div class="rhyme-list">
+        ${allWords.map(w => `
+          <span>
+            ${w}
+            ${w !== mainWord ? `<button onclick=\"editWord('${w}')\" class=\"secondary\" style=\"padding:2px 6px;font-size:12px;margin-left:5px;\">✏️</button>` : ''}
+          </span>
+        `).join('')}
+      </div>
+      <div style="margin-top:8px;font-size:0.9em;color:#666;">
+        Rim-nyckel: ${mainWordData.rhymeKey}
+        ${mainWordData.description ? ` | ${mainWordData.description}` : ''}
+      </div>
+    </div>
+    `;
+  }).join('');
+}
+
+// Formatera rim-typ
+function formatType(type) {
+  const types = {
+    'perfect': 'Perfekt',
+    'multi-syllable': 'Flerstavigt',
+    'assonance': 'Assonantisk',
+    'alliteration': 'Alliteration'
+  };
+  return types[type] || type;
+}
+
+// Hämta ikon för typ
+function getTypeIcon(type) {
+  const icons = {
+    'perfect': '✓',
+    'multi-syllable': '🔤',
+    'assonance': '🎵',
+    'alliteration': '🅰️'
+  };
+  return icons[type] || '';
+}
+
+// Importera CSV
+function importCSV() {
+  const file = document.getElementById('csvFile').files[0];
+  if (!file) {
+    showModal('Välj en CSV-fil först.');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const content = e.target.result;
+      const lines = content.split('\n');
+
+      for (const line of lines) {
+        if (!line.trim()) continue;
+        const parts = line.split(',').map(p => p.trim());
+        if (parts.length < 2) continue;
+
+        const word = parts[0].toLowerCase();
+        const rhymes = parts.slice(1).filter(p => p).map(r => r.toLowerCase());
+        const rhymeKey = getRhymeKey(word);
+
+        rhymeData[word] = {
+          rhymes,
+          rhymeKey,
+          type: "perfect",
+          language: "sv",
+          description: ""
+        };
+      }
+
+      saveData();
       renderWordList();
-      // Realtidssök
-      document.getElementById('searchInput').addEventListener('input', search);
+      document.getElementById('csvFile').value = '';
+      showModal(`Importerade ${lines.length - 1} ord!`);
+    } catch (e) {
+      showModal('Fel vid import: ' + e.message);
     }
+  };
+  reader.readAsText(file);
+}
 
-    // Load data from localStorage
-    function loadData() {
-      const saved = localStorage.getItem('rhymeData');
-      if (saved) {
-        try {
-          rhymeData = JSON.parse(saved);
-        } catch (e) {
-          rhymeData = {};
-        }
-      }
-    }
+// Ladda ner mall
+function downloadTemplate() {
+  const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\n';
+  downloadCSV(csv, 'rimlexikon_mall.csv');
+}
 
-    // Save data to localStorage
-    function saveData() {
-      localStorage.setItem('rhymeData', JSON.stringify(rhymeData));
-    }
+// Lägg till ord
+function addWord() {
+  const word = document.getElementById('wordInput').value.trim().toLowerCase();
+  const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim().toLowerCase()).filter(r => r);
+  const type = document.getElementById('rhymeType').value;
+  const language = document.getElementById('language').value;
+  const description = document.getElementById('description').value;
 
-    // Generera rim-nyckel (sista 2-3 bokstäverna)
-    function getRhymeKey(word) {
-      return word.slice(-3).toLowerCase(); // Använder 3 bokstäver för bättre matchning
-    }
+  if (!word) {
+    showModal('Ange ett ord.');
+    return;
+  }
 
-    // Sök med realtid och språkfilter
-    function search() {
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      const langSv = document.getElementById('langSv').checked;
-      const langEn = document.getElementById('langEn').checked;
-      const langFr = document.getElementById('langFr').checked;
+  if (!rhymes.length) {
+    showModal('Ange minst ett rimord.');
+    return;
+  }
 
-      if (!query) {
-        document.getElementById('results').innerHTML = '<p>Skriv ett ord för att hitta rim.</p>';
-        return;
-      }
+  const rhymeKey = getRhymeKey(word);
 
-      const matches = [];
-      const queryRhymeKey = getRhymeKey(query);
+  rhymeData[word] = {
+    rhymes,
+    rhymeKey,
+    type,
+    language,
+    description
+  };
 
-      for (const [word, data] of Object.entries(rhymeData)) {
-        // Kolla språkfilter
-        const langMatch = (langSv && data.language === "sv") ||
-                          (langEn && data.language === "en") ||
-                          (langFr && data.language === "fr");
-
-        if (!langMatch) continue;
-
-        // Kolla om ordet matchar direkt, eller om det rimmar
-        if (word.includes(query) ||
-            data.rhymes.includes(query) ||
-            data.rhymeKey === queryRhymeKey ||
-            word === query) {
-          matches.push({ word, ...data });
-        }
-      }
-
-      displayResults(matches);
-    }
-
-    // Visa resultat
-    function displayResults(matches) {
-      const resultsDiv = document.getElementById('results');
-      if (matches.length === 0) {
-        resultsDiv.innerHTML = '<p>Inga rim hittades.</p>';
-        return;
-      }
-
-      // Gruppera efter rim-nyckel
-      const grouped = {};
-      matches.forEach(match => {
-        if (!grouped[match.rhymeKey]) {
-          grouped[match.rhymeKey] = [];
-        }
-        grouped[match.rhymeKey].push(match);
-      });
-
-      resultsDiv.innerHTML = Object.values(grouped).map(group =>
-        `<div class="rhyme-group">
-          <div class="word">${group[0].word} (${group[0].language}, ${group[0].type})</div>
-          <div class="rhymes">Rim: ${[...new Set(group.flatMap(g => [g.word, ...g.rhymes]))].join(', ')}</div>
-          <div class="meta">Rim-nyckel: ${group[0].rhymeKey}</div>
-        </div>`
-      ).join('');
-    }
-
-    // Importera CSV
-    function importCSV() {
-      const file = document.getElementById('csvFile').files[0];
-      if (!file) {
-        showModal('Välj en CSV-fil först.');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const content = e.target.result;
-          const lines = content.split('\n');
-
-          for (const line of lines) {
-            if (!line.trim()) continue;
-            const parts = line.split(',').map(p => p.trim());
-            if (parts.length < 2) continue;
-
-            const word = parts[0].toLowerCase();
-            const rhymes = parts.slice(1).filter(p => p).map(r => r.toLowerCase());
-            const rhymeKey = getRhymeKey(word);
-
-            rhymeData[word] = {
-              rhymes,
-              rhymeKey,
-              type: "perfect",
-              language: "sv",
-              description: ""
-            };
-          }
-
-          saveData();
-          renderWordList();
-          document.getElementById('csvFile').value = '';
-          showModal(`Importerade ${lines.length - 1} ord!`);
-        } catch (e) {
-          showModal('Fel vid import: ' + e.message);
-        }
-      };
-      reader.readAsText(file);
-    }
-
-    // Ladda ner mall
-    function downloadTemplate() {
-      const csv = 'ord,rimord1,rimord2,rimord3\nsol,mol,hol,kol\ncat,hat,rat,bat\nsoleil,éveil,réveil,oreille\n';
-      downloadCSV(csv, 'rimlexikon_mall.csv');
-    }
-
-    // Lägg till ord
-    function addWord() {
-      const word = document.getElementById('wordInput').value.trim().toLowerCase();
-      const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim().toLowerCase()).filter(r => r);
-      const type = document.getElementById('rhymeType').value;
-      const language = document.getElementById('language').value;
-      const description = document.getElementById('description').value;
-
-      if (!word) {
-        showModal('Ange ett ord.');
-        return;
-      }
-
-      if (!rhymes.length) {
-        showModal('Ange minst ett rimord.');
-        return;
-      }
-
-      const rhymeKey = getRhymeKey(word);
-
-      // Lägg till huvudordet
-      rhymeData[word] = {
-        rhymes,
+  rhymes.forEach(r => {
+    if (!rhymeData[r]) {
+      rhymeData[r] = {
+        rhymes: [word],
         rhymeKey,
         type,
         language,
-        description
+        description: ""
       };
-
-      // Lägg till alla rimord som pekar tillbaka
-      rhymes.forEach(r => {
-        if (!rhymeData[r]) {
-          rhymeData[r] = {
-            rhymes: [word],
-            rhymeKey,
-            type,
-            language,
-            description: ""
-          };
-        } else {
-          // Uppdatera befintligt ord
-          if (!rhymeData[r].rhymes.includes(word)) {
-            rhymeData[r].rhymes.push(word);
-          }
-          rhymeData[r].rhymeKey = rhymeKey;
-        }
-      });
-
-      saveData();
-      renderWordList();
-
-      // Rensa fält
-      document.getElementById('wordInput').value = '';
-      document.getElementById('rhymeInput').value = '';
-      document.getElementById('description').value = '';
-      currentEditingWord = null;
-      document.getElementById('updateBtn').disabled = true;
-      document.getElementById('deleteBtn').disabled = true;
-
-      showModal(`Lade till: ${word}`);
+    } else {
+      if (!rhymeData[r].rhymes.includes(word)) {
+        rhymeData[r].rhymes.push(word);
+      }
+      rhymeData[r].rhymeKey = rhymeKey;
     }
+  });
 
-    // Uppdatera ord
-    function updateWord() {
-      if (!currentEditingWord) return;
+  saveData();
+  renderWordList();
 
-      const word = document.getElementById('wordInput').value.trim().toLowerCase();
-      const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim().toLowerCase()).filter(r => r);
-      const type = document.getElementById('rhymeType').value;
-      const language = document.getElementById('language').value;
-      const description = document.getElementById('description').value;
+  document.getElementById('wordInput').value = '';
+  document.getElementById('rhymeInput').value = '';
+  document.getElementById('description').value = '';
+  currentEditingWord = null;
+  document.getElementById('updateBtn').disabled = true;
+  document.getElementById('deleteBtn').disabled = true;
 
-      if (!word || !rhymes.length) return;
+  showModal(`Lade till: ${word}`);
+}
 
-      const rhymeKey = getRhymeKey(word);
+// Uppdatera ord
+function updateWord() {
+  if (!currentEditingWord) return;
 
-      // Ta bort gammalt ord
-      delete rhymeData[currentEditingWord];
+  const word = document.getElementById('wordInput').value.trim().toLowerCase();
+  const rhymes = document.getElementById('rhymeInput').value.split(',').map(r => r.trim().toLowerCase()).filter(r => r);
+  const type = document.getElementById('rhymeType').value;
+  const language = document.getElementById('language').value;
+  const description = document.getElementById('description').value;
 
-      // Lägg till nytt ord
-      rhymeData[word] = {
-        rhymes,
-        rhymeKey,
-        type,
-        language,
-        description
-      };
+  if (!word || !rhymes.length) return;
 
-      saveData();
-      renderWordList();
+  const rhymeKey = getRhymeKey(word);
 
-      currentEditingWord = null;
-      document.getElementById('updateBtn').disabled = true;
-      document.getElementById('deleteBtn').disabled = true;
+  delete rhymeData[currentEditingWord];
 
-      showModal(`Uppdaterade till: ${word}`);
-    }
+  rhymeData[word] = {
+    rhymes,
+    rhymeKey,
+    type,
+    language,
+    description
+  };
 
-    // Bekräfta radering
-    function confirmDelete() {
-      if (!currentEditingWord) return;
-      document.getElementById('modalMessage').textContent = `Ta bort "${currentEditingWord}"?`;
-      document.getElementById('modalConfirm').textContent = 'Ta bort';
-      document.getElementById('modalConfirm').onclick = function() {
-        deleteWord();
-        document.getElementById('modal').style.display = 'none';
-      };
-      document.getElementById('modal').style.display = 'flex';
-    }
+  saveData();
+  renderWordList();
 
-    // Radera ord
-    function deleteWord() {
-      if (!currentEditingWord) return;
+  currentEditingWord = null;
+  document.getElementById('updateBtn').disabled = true;
+  document.getElementById('deleteBtn').disabled = true;
 
-      delete rhymeData[currentEditingWord];
-      saveData();
-      renderWordList();
+  showModal(`Uppdaterade till: ${word}`);
+}
 
-      document.getElementById('wordInput').value = '';
-      document.getElementById('rhymeInput').value = '';
-      document.getElementById('description').value = '';
-      currentEditingWord = null;
-      document.getElementById('updateBtn').disabled = true;
-      document.getElementById('deleteBtn').disabled = true;
-    }
+// Bekräfta radering
+function confirmDelete() {
+  if (!currentEditingWord) return;
+  document.getElementById('modalMessage').textContent = `Ta bort "${currentEditingWord}"?`;
+  document.getElementById('modalConfirm').textContent = 'Ta bort';
+  document.getElementById('modalConfirm').onclick = function() {
+    deleteWord();
+    document.getElementById('modal').style.display = 'none';
+  };
+  document.getElementById('modal').style.display = 'flex';
+}
 
-    // Rendera ordlista
-    function renderWordList() {
-      const words = Object.keys(rhymeData).sort();
-      const wordListDiv = document.getElementById('wordList');
-      wordListDiv.innerHTML = words.map(word =>
-        `<div class="word-item" data-word="${word}" onclick="editWord('${word}')">
-          ${word} (${rhymeData[word].language}, ${rhymeData[word].type})
-        </div>`
-      ).join('');
-    }
+// Radera ord
+function deleteWord() {
+  if (!currentEditingWord) return;
 
-    // Redigera ord
-    function editWord(word) {
-      currentEditingWord = word;
-      const data = rhymeData[word];
-      document.getElementById('wordInput').value = word;
-      document.getElementById('rhymeInput').value = data.rhymes.join(', ');
-      document.getElementById('rhymeType').value = data.type;
-      document.getElementById('language').value = data.language;
-      document.getElementById('description').value = data.description || '';
-      document.getElementById('updateBtn').disabled = false;
-      document.getElementById('deleteBtn').disabled = false;
-      document.getElementById('wordInput').focus();
-    }
+  delete rhymeData[currentEditingWord];
+  saveData();
+  renderWordList();
 
-    // Visa modal
-    function showModal(message) {
-      document.getElementById('modalMessage').textContent = message;
-      document.getElementById('modalConfirm').textContent = 'OK';
-      document.getElementById('modalConfirm').onclick = function() {
-        document.getElementById('modal').style.display = 'none';
-      };
-      document.getElementById('modal').style.display = 'flex';
-    }
+  document.getElementById('wordInput').value = '';
+  document.getElementById('rhymeInput').value = '';
+  document.getElementById('description').value = '';
+  currentEditingWord = null;
+  document.getElementById('updateBtn').disabled = true;
+  document.getElementById('deleteBtn').disabled = true;
+}
 
-    // Modal cancel
-    function modalCancel() {
-      document.getElementById('modal').style.display = 'none';
-    }
+// Rendera ordlista
+function renderWordList() {
+  const words = Object.keys(rhymeData).sort();
+  const wordListDiv = document.getElementById('wordList');
+  wordListDiv.innerHTML = words.map(word =>
+    `<div class="word-item" data-word="${word}" onclick="editWord('${word}')">
+      ${word}
+      <span class="lang-badge lang-${rhymeData[word].language}" style="margin-left:8px;">${rhymeData[word].language.toUpperCase()}</span>
+      <span class="type-badge type-${rhymeData[word].type}" style="margin-left:4px;">${getTypeIcon(rhymeData[word].type)}</span>
+    </div>`
+  ).join('');
+}
 
-    // Modal confirm
-    function modalConfirm() {
-      document.getElementById('modal').style.display = 'none';
-    }
+// Redigera ord
+function editWord(word) {
+  currentEditingWord = word;
+  const data = rhymeData[word];
+  document.getElementById('wordInput').value = word;
+  document.getElementById('rhymeInput').value = data.rhymes.join(', ');
+  document.getElementById('rhymeType').value = data.type;
+  document.getElementById('language').value = data.language;
+  document.getElementById('description').value = data.description || '';
+  document.getElementById('updateBtn').disabled = false;
+  document.getElementById('deleteBtn').disabled = false;
+  document.getElementById('wordInput').focus();
+}
 
-    // Ladda ner CSV
-    function downloadCSV(content, filename) {
-      const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename;
-      link.click();
-      URL.revokeObjectURL(url);
-    }
+// Visa modal
+function showModal(message) {
+  document.getElementById('modalMessage').textContent = message;
+  document.getElementById('modalConfirm').textContent = 'OK';
+  document.getElementById('modalConfirm').onclick = function() {
+    document.getElementById('modal').style.display = 'none';
+  };
+  document.getElementById('modal').style.display = 'flex';
+}
 
-    // Initiera
-    window.onload = init;
-  </script>
+// Modal cancel
+function modalCancel() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// Ladda ner CSV
+function downloadCSV(content, filename) {
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// Initiera
+window.onload = init;
+</script>
 </body>
 </html>
